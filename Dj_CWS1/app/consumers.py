@@ -1,18 +1,23 @@
 from channels.consumer import SyncConsumer, AsyncConsumer
 
+from channels.exceptions import StopConsumer
+
 class MySyncConsumer(SyncConsumer):
     def websocket_connect(self,event):
         """
         This handler is called when clinet initially opens a
         connection and is about to finish the WebSocket handshake
         """
-        print("WebSocket Connected....")
+        print("WebSocket Connected....", event)
+        self.send({
+            'type':'websocket.accept'
+        })
 
     def websocket_receive(self, event):
         """
         This handler is called when data recived from client
         """
-        print("Message Recived.....")
+        print("Message Recived.....", event)
 
     def websocket_disconnect(self, event):
         """
@@ -20,7 +25,8 @@ class MySyncConsumer(SyncConsumer):
         either from client closing the connection, the server closing the
         connection, or loss of socket.
         """
-        print("WebSocket Disconnected.....")
+        print("WebSocket Disconnected.....", event)
+        raise StopConsumer()
 
 class MyAyncConsumer(AsyncConsumer):
     async def websocket_connect(self,event):
@@ -29,6 +35,9 @@ class MyAyncConsumer(AsyncConsumer):
         connection and is about to finish the WebSocket handshake
         """
         print("WebSocket Connected....")
+        await self.send({
+            'type':'websocket.accept'
+        })
 
     async def websocket_receive(self, event):
         """
@@ -43,3 +52,4 @@ class MyAyncConsumer(AsyncConsumer):
         connection, or loss of socket.
         """
         print("WebSocket Disconnected.....")
+        raise StopConsumer()
