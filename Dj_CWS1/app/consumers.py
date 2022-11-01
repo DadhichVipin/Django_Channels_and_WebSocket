@@ -18,6 +18,10 @@ class MySyncConsumer(SyncConsumer):
         This handler is called when data recived from client
         """
         print("Message Recived.....", event)
+        self.send({
+            'type':'websocket.send',
+            'text': 'Massage from Application to client'
+        })
 
     def websocket_disconnect(self, event):
         """
@@ -34,7 +38,7 @@ class MyAyncConsumer(AsyncConsumer):
         This handler is called when clinet initially opens a
         connection and is about to finish the WebSocket handshake
         """
-        print("WebSocket Connected....")
+        print("WebSocket Connected....",event)
         await self.send({
             'type':'websocket.accept'
         })
@@ -43,7 +47,11 @@ class MyAyncConsumer(AsyncConsumer):
         """
         This handler is called when data recived from client
         """
-        print("Message Recived.....")
+        print("Message Recived.....",event)
+        await self.send({
+            'type':'websocket.send',
+            'text': 'Massage from Application to client'
+        })
 
     async def websocket_disconnect(self, event):
         """
@@ -51,5 +59,5 @@ class MyAyncConsumer(AsyncConsumer):
         either from client closing the connection, the server closing the
         connection, or loss of socket.
         """
-        print("WebSocket Disconnected.....")
+        print("WebSocket Disconnected.....",event)
         raise StopConsumer()
